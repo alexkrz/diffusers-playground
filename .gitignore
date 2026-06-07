@@ -1,0 +1,9 @@
+# IDE
+.vscode/
+
+# Artifacts
+.ipynb_checkpoints/
+__pycache__/
+
+# Directories
+/results/

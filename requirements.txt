@@ -1,0 +1,6 @@
+torch==2.10.*
+torchvision==0.25.*
+transformers==5.10.*
+diffusers==0.37.*
+accelerate==1.13.*
+matplotlib==3.10.*
