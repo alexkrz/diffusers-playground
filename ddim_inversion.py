@@ -35,7 +35,7 @@ pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
 
 # Set up a DDIM scheduler
 pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
-# pipe.scheduler = cast(DDIMScheduler, pipe.scheduler)
+assert isinstance(pipe.scheduler, DDIMScheduler)
 
 # Sample an image to make sure it is all working
 prompt = "Beautiful DSLR Photograph of a penguin on the beach, golden hour"
@@ -66,6 +66,7 @@ def sample(
     )
 
     # Set num inference steps
+    assert isinstance(pipe.scheduler, DDIMScheduler)
     pipe.scheduler.set_timesteps(num_inference_steps, device=device)
 
     # Create a random starting point if we don't have one already
@@ -158,6 +159,7 @@ def invert(
     intermediate_latents = []
 
     # Set num inference steps
+    assert isinstance(pipe.scheduler, DDIMScheduler)
     pipe.scheduler.set_timesteps(num_inference_steps, device=device)
 
     # Reversed timesteps <<<<<<<<<<<<<<<<<<<<
@@ -168,7 +170,7 @@ def invert(
         if i >= num_inference_steps - 1:
             continue
 
-        t = timesteps[i]  # ty:ignore[not-subscriptable]
+        t = timesteps[i]
 
         # Expand the latents if we are doing classifier free guidance
         latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
