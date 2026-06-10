@@ -7,3 +7,6 @@ __pycache__/
 
 # Directories
 /results/
+/data/*
+!/data/1_a.png
+!/data/1_b.png
