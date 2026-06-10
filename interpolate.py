@@ -23,26 +23,47 @@ print(pipe.device)
 pprint(dict(pipe.config), sort_dicts=False)
 
 # %%
-# Encode and decode image
-input_image = Image.open("data/1_a.png").resize((512, 512))
-input_image_prompt = "a photo of a person"
+# Encode images
+# Encode image_a
+img_a = Image.open("data/1_a.png").resize((512, 512))
+img_a_prompt = "a photo of a person"
 with torch.no_grad():
-    latent = pipe.vae.encode(tfmF.to_tensor(input_image).unsqueeze(0).to(device) * 2 - 1)
-latent_vec = 0.18215 * latent.latent_dist.sample()
-print("Encoding image:")
-inverted_latents = invert(
+    latent = pipe.vae.encode(tfmF.to_tensor(img_a).unsqueeze(0).to(device) * 2 - 1)
+latent_a = 0.18215 * latent.latent_dist.sample()
+print("Encoding img_a:")
+inverted_latents_a = invert(
     pipe,
-    latent_vec,
-    input_image_prompt,
+    latent_a,
+    img_a_prompt,
     num_inference_steps=50,
 )
-print(inverted_latents.shape)
+
+# Encode image_b
+img_b = Image.open("data/1_b.png").resize((512, 512))
+img_b_prompt = "a photo of a person"
+with torch.no_grad():
+    latent = pipe.vae.encode(tfmF.to_tensor(img_b).unsqueeze(0).to(device) * 2 - 1)
+latent_b = 0.18215 * latent.latent_dist.sample()
+print("Encoding img_b:")
+inverted_latents_b = invert(
+    pipe,
+    latent_b,
+    img_b_prompt,
+    num_inference_steps=50,
+)
+
+# %%
+# Decode interpolated latent_vec
+start_step = 25
+latent_a = inverted_latents_a[-(start_step + 1)][None]
+latent_b = inverted_latents_b[-(start_step + 1)][None]
+latent_interp = (latent_a + latent_b) / 2
+
 print("Decoding image:")
-start_step = 20
 sample(
     pipe,
-    input_image_prompt,
-    start_latents=inverted_latents[-(start_step + 1)][None],
+    img_a_prompt,
+    start_latents=latent_interp,
     start_step=start_step,
     num_inference_steps=50,
 )[0]
