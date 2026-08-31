@@ -1,3 +1,5 @@
+# Reference: https://huggingface.co/learn/diffusion-course/en/unit4/2
+
 # %%
 #  Setup
 from io import BytesIO
